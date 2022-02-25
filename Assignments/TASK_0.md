@@ -9,22 +9,71 @@ Sur quelle touche faut-il appuyer pour ajouter un avion ?
 Comment faire pour quitter le programme ?
 A quoi sert la touche 'F' ?
 
+Pour ajouter on appuie sur `C`
+Pour quitter faut appuyer sur `X` et `Q`
+Pour le 11 septembre faut appuyer sur `F`
+
 Ajoutez un avion à la simulation et attendez.
 Que est le comportement de l'avion ?
 Quelles informations s'affichent dans la console ?
 
+On voit l'avion atterrir ensuite il fait l'entretient puis il repart. en boucle.
+On a l'information quand il atterrit quand il commence l'entretient, quand il a terminé, puis quand il décolle.
+
 Ajoutez maintenant quatre avions d'un coup dans la simulation.
 Que fait chacun des avions ?
+
+chacun des avions fait son chemin.
 
 ## B- Analyse du code
 
 Listez les classes du programme à la racine du dossier src/.
 Pour chacune d'entre elle, expliquez ce qu'elle représente et son rôle dans le programme.
 
+ - `aircraft` : Représente un avion
+ - `aircraft_types` : Sert pour différencier les 3 différents types d'avions
+ - `airport` : Représente l'aéroport
+ - `airport_types` : Sert à différencier les différents types d'aéroports
+ - `Point2D` : Point 2 dimensions
+ - `Point3D` : Point 3 dimensions
+ - `runway` : Représente la position de la piste d'atterrissage par rapport à l'aéroport
+ - `terminal` : Représente le terminal pour l'entretient de l'avion
+ - `tower` : Représente la tour de control de l'aéroport
+ - `tower_sim` : Fait l'interface pour que l'utilisateur puisse controller la tour de contrôle
+ - `waypoint` : Représente les points de passage
+ - `WaypointType` : Les différents types de `waypoint` il peuvent etre sur le sol, dans un terminal ou dans les airs.
+
 Pour les classes `Tower`, `Aircaft`, `Airport` et `Terminal`, listez leurs fonctions-membre publiques et expliquez précisément à quoi elles servent.
 Réalisez ensuite un schéma présentant comment ces différentes classes intéragissent ensemble.
 
+ - `Tower` : 
+   - `get_instructions` : Sert à récupérer les instructions de la tour de controle.
+   - `arrived_at_terminal` : Indique à la tour que l'avion est arrivé au terminal et commence l'entretient.
+   
+ - `Aircraft` : 
+   - `get_flight_num` : Renvoie le numéro de vol de l'avion
+   - `distance_to` : Renvoie la distance de l'avion à un point donné.
+   - `display` : Affiche l'avion
+   - `move` : Déplace l'avion
+
+ - `Airport` : 
+   - `get_tower` : Renvoie la tour de controle
+   - `display` : Affiche l'aéroport.
+   - `move` : Fait avancer l'entretient de chaque terminal
+
+ - `Terminal` : 
+   - `in_use` : Renvoie un booléen indiquant si le terminal est actuellement utilisé
+   - `is_servicing` : Renvoie un booléen indiquant si le terminal est en train de faire l'entretient d'un avion
+   - `assign_craft` : Assigne un avion au terminal
+   - `start_service` : Commence l'entretient de l'avion
+   - `finish_service` : Termine l'entretient de l'avion
+   - `move` : Fait avancer l'entretient de l'avion
+
+
 Quelles classes et fonctions sont impliquées dans la génération du chemin d'un avion ?
+
+La classe `Waypoint` la fonction `Tower::get_circle()` la fonction `Aircraft::move()`
+
 Quel conteneur de la librairie standard a été choisi pour représenter le chemin ?
 Expliquez les intérêts de ce choix.
 
@@ -33,6 +82,8 @@ Expliquez les intérêts de ce choix.
 1) Déterminez à quel endroit du code sont définies les vitesses maximales et accélération de chaque avion.
 Le Concorde est censé pouvoir voler plus vite que les autres avions.
 Modifiez le programme pour tenir compte de cela.
+
+Dans aircraft_types j'ai doublé la vitesse max par rapport aux autres.
 
 2) Identifiez quelle variable contrôle le framerate de la simulation.
 Ajoutez deux nouveaux inputs au programme permettant d'augmenter ou de diminuer cette valeur.

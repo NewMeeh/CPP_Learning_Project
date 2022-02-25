@@ -95,6 +95,8 @@ Si on essaye de mettre le programme en pause ça crash car le programme essaye d
 
 3) Identifiez quelle variable contrôle le temps de débarquement des avions et doublez-le.
 
+`SERVICE_CYCLES` * 2 :) 
+
 4) Lorsqu'un avion a décollé, il réattérit peu de temps après.
 Faites en sorte qu'à la place, il soit retiré du programme.\
 Indices :\

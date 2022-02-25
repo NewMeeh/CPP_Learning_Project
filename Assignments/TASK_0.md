@@ -90,6 +90,9 @@ Ajoutez deux nouveaux inputs au programme permettant d'augmenter ou de diminuer 
 Essayez maintenant de mettre en pause le programme en manipulant ce framerate. Que se passe-t-il ?\
 Ajoutez une nouvelle fonctionnalité au programme pour mettre le programme en pause, et qui ne passe pas par le framerate.
 
+Il faut gérer le framerate dans `opengl_interface` il y a une variable `ticks_per_sec`.
+Si on essaye de mettre le programme en pause ça crash car le programme essaye de faire une division par 0.
+
 3) Identifiez quelle variable contrôle le temps de débarquement des avions et doublez-le.
 
 4) Lorsqu'un avion a décollé, il réattérit peu de temps après.

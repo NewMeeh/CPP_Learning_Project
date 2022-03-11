@@ -1,11 +1,13 @@
 #pragma once
 
 #include "waypoint.hpp"
+#include "aircraft.hpp"
 
 #include <algorithm>
 #include <unordered_map>
 #include <utility>
 #include <vector>
+#include <map>
 
 class Airport;
 class Aircraft;
@@ -14,7 +16,8 @@ class Terminal;
 class Tower
 {
 private:
-    using AircraftToTerminal      = std::vector<std::pair<const Aircraft*, size_t>>;
+    //using AircraftToTerminal      = std::vector<std::pair<const Aircraft*, size_t>>;
+    using AircraftToTerminal      = std::map<const Aircraft*, size_t>;
     using AircraftAndTerminalIter = AircraftToTerminal::iterator;
 
     Airport& airport;

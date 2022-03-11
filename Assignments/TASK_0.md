@@ -124,10 +124,12 @@ On le change par une map.
 
 1) Comment a-t-on fait pour que seule la classe `Tower` puisse réserver un terminal de l'aéroport ?
 
+On a mis le chemps reserved_terminals privé et Airport contient possède un `friend class Tower;` (pas joli).
 
-
-2) En regardant le contenu de la fonction `void Aircraft::turn(Point3D direction)`, pourquoi selon-vous ne sommes-nous pas passer par une référence ?
+2) En regardant le contenu de la fonction `void Aircraft::turn(Point3D direction)`, pourquoi selon-vous ne sommes-nous pas passer par une const référence ?
 Pensez-vous qu'il soit possible d'éviter la copie du `Point3D` passé en paramètre ?
+
+Non ce n'est pas possible car notre fonction modifie l'objet passé en paramètre.
 
 ## E- Bonus
 

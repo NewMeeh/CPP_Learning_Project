@@ -5,6 +5,7 @@
 #pragma once
 
 #include "aircraft.hpp"
+#include "aircraft_factory.hpp"
 
 #include <string>
 #include <map>
@@ -14,11 +15,15 @@ class AircraftManager : public GL::DynamicObject
 {
 private:
     std::vector<std::unique_ptr<Aircraft>> aircrafts = std::vector<std::unique_ptr<Aircraft>>();
+    AircraftFactory aircraftFactory;
+
 public:
-    AircraftManager() {};
+    AircraftManager() {
+    };
     ~AircraftManager() {};
 
-    void register_aircraft(std::unique_ptr<Aircraft> aircraft);
+    void create_aircraft(Airport *airport);
+    void init();
 
     bool move();
 };

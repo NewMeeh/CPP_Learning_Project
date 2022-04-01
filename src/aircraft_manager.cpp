@@ -5,8 +5,12 @@
 #include "aircraft_manager.hpp"
 
 
-void AircraftManager::register_aircraft(std::unique_ptr<Aircraft> aircraft) {
-    aircrafts.emplace_back(std::move(aircraft));
+void AircraftManager::create_aircraft(Airport *airport) {
+    aircrafts.emplace_back(aircraftFactory.create_random_aircraft(airport));
+}
+
+void AircraftManager::init() {
+    aircraftFactory.init_aircraft_types();
 }
 
 bool AircraftManager::move()

@@ -15,15 +15,20 @@ void AircraftManager::init() {
 
 bool AircraftManager::move()
 {
-    for (auto it = aircrafts.begin(); it != aircrafts.end(); )
-    {
-        if (!(*it)->move()) {
-            it = aircrafts.erase(it);
-        }
-        else
-        {
-            ++it;
-        }
-    }
+    aircrafts.erase(
+        std::remove_if(
+            aircrafts.begin(),
+            aircrafts.end(),
+            [](const auto &it){return !it->move();}),
+        aircrafts.end());
+
     return true;
+}
+
+void AircraftManager::displayCountAircraftOnAirline(int i) {
+    auto airline = aircraftFactory.airlines[i];
+    std::cout << std::count_if(aircrafts.begin(),
+                         aircrafts.end(),
+                         [airline](std::unique_ptr<Aircraft>& a){auto name = a->get_flight_num();
+                                         return name.find(airline) != std::string::npos;}) << " aircrafts on airline " << airline << std::endl;
 }

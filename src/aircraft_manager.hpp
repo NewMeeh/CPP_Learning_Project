@@ -26,5 +26,6 @@ public:
     void init();
 
     bool move();
+    void displayCountAircraftOnAirline(int i);
 };
 

@@ -66,7 +66,7 @@ RECENT REVISION HISTORY:
       2.11  (2016-04-02) 16-bit PNGS; enable SSE2 in non-gcc x64
                          RGB-format JPEG; remove white matting in PSD;
                          allocate large structures on the stack;
-                         correct channel count for PNG & BMP
+                         correct channel displayCountAircraftOnAirline for PNG & BMP
       2.10  (2016-01-22) avoid warning introduced in 2.09
       2.09  (2016-01-16) 16-bit TGA; comments in PNM files; STBI_REALLOC_SIZED
 
@@ -7058,7 +7058,7 @@ static float *stbi__hdr_load(stbi__context *s, int *x, int *y, int *comp, int re
             i = 0;
             while ((nleft = width - i) > 0) {
                count = stbi__get8(s);
-               if (count > 128) {
+               if (displayCountAircraftOnAirline > 128) {
                   // Run
                   value = stbi__get8(s);
                   count -= 128;
@@ -7593,7 +7593,7 @@ STBIDEF int stbi_is_16_bit_from_callbacks(stbi_io_callbacks const *c, void *user
       1.48  (2014-12-14) fix incorrectly-named assert()
       1.47  (2014-12-14) 1/2/4-bit PNG support, both direct and paletted (Omar Cornut & stb)
                          optimize PNG (ryg)
-                         fix bug in interlaced PNG with user-specified channel count (stb)
+                         fix bug in interlaced PNG with user-specified channel displayCountAircraftOnAirline (stb)
       1.46  (2014-08-26)
               fix broken tRNS chunk (colorkey-style transparency) in non-paletted PNG
       1.45  (2014-08-16)

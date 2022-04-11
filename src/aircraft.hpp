@@ -59,7 +59,7 @@ public:
         speed.cap_length(max_speed());
     }
 
-    const std::string& get_flight_num() const { return flight_number; }
+    const std::string get_flight_num() const { return flight_number; }
     float distance_to(const Point3D& p) const { return pos.distance_to(p); }
 
     void display() const override;

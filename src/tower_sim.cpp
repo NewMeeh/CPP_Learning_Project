@@ -36,13 +36,16 @@ void TowerSimulation::create_keystrokes()
 {
     GL::keystrokes.emplace('x', []() { GL::exit_loop(); });
     GL::keystrokes.emplace('q', []() { GL::exit_loop(); });
-GL::keystrokes.emplace('c', [this]() {aircraftManager.create_aircraft(airport); });
+    GL::keystrokes.emplace('c', [this]() {aircraftManager.create_aircraft(airport); });
     GL::keystrokes.emplace('+', []() { GL::change_zoom(0.95f); });
     GL::keystrokes.emplace('-', []() { GL::change_zoom(1.05f); });
     GL::keystrokes.emplace('f', []() { GL::toggle_fullscreen(); });
     GL::keystrokes.emplace('a', []() { GL::faster(); });
     GL::keystrokes.emplace('z', []() { GL::slower(); });
     GL::keystrokes.emplace('p', []() { GL::pause(); });
+    for (char c = '0'; c < '8'; c++) {
+        GL::keystrokes.emplace(c, [this, c]() { aircraftManager.displayCountAircraftOnAirline(c - '0');});
+    }
 }
 
 void TowerSimulation::display_help() const

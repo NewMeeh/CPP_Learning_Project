@@ -12,7 +12,7 @@
 class AircraftFactory
 {
 private:
-    const std::string airlines[8] = { "AF", "LH", "EY", "DL", "KL", "BA", "AY", "EY" };
+
     std::set<std::string> usedNames;
 
     std::unique_ptr<Aircraft> create_aircraft(const AircraftType& type, Airport* airport);
@@ -23,6 +23,7 @@ private:
 
 
 public:
+    const std::string airlines[8] = { "AF", "LH", "EY", "DL", "KL", "BA", "AY", "EY" };
     // note: textures have to be initialized after initializing glut, so we'll need
     // our own init here
     inline void init_aircraft_types()

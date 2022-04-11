@@ -97,6 +97,12 @@ bool Aircraft::move()
     }
     if (!is_at_terminal)
     {
+        fuel--;
+        if(fuel == 0) {
+            ret = false;
+            std::cout << "Aicraft on flihgt " << flight_number << " crashed : no fuel left" << std::endl;
+        }
+
         if (waypoints.empty()){
             ret = false;
         }

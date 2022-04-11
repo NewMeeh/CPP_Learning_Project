@@ -5,6 +5,7 @@
 #include <cassert>
 #include <cmath>
 #include <iostream>
+#include <numeric>
 
 struct Point2D
 {
@@ -64,7 +65,7 @@ struct Point2D
 
 struct Point3D
 {
-    float values[3] {};
+    std::array<float, 3> values;
 
     Point3D() {}
     Point3D(float x, float y, float z) : values { x, y, z } {}
@@ -80,25 +81,25 @@ struct Point3D
 
     Point3D& operator+=(const Point3D& other)
     {
-        x() += other.x();
-        y() += other.y();
-        z() += other.z();
+        std::transform(values.cbegin(), values.cend(), other.values.cbegin(), values.begin(), std::plus<>());
+        //x() += other.x();
+        //y() += other.y();
+        //z() += other.z();
         return *this;
     }
 
     Point3D& operator-=(const Point3D& other)
     {
-        x() -= other.x();
-        y() -= other.y();
-        z() -= other.z();
+        std::transform(values.cbegin(), values.cend(), other.values.cbegin(), values.begin(), std::minus<>());
+        //x() -= other.x();
+        //y() -= other.y();
+        //z() -= other.z();
         return *this;
     }
 
     Point3D& operator*=(const float scalar)
     {
-        x() *= scalar;
-        y() *= scalar;
-        z() *= scalar;
+        std::transform(values.cbegin(), values.cend(), values.begin(), [scalar](float x){return x*scalar;});
         return *this;
     }
 
@@ -125,7 +126,16 @@ struct Point3D
 
     Point3D operator-() const { return Point3D { -x(), -y(), -z() }; }
 
-    float length() const { return std::sqrt(x() * x() + y() * y() + z() * z()); }
+    float length() const {
+        auto o = std::transform_reduce(
+            values.begin(),
+            values.end(),
+            0.f,
+            [](float x, float y){return x+y;},
+            [](const float x){return x*x;}
+            );
+    return std::sqrt(o);
+    }
 
     float distance_to(const Point3D& other) const { return (*this - other).length(); }
 

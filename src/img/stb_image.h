@@ -7058,7 +7058,7 @@ static float *stbi__hdr_load(stbi__context *s, int *x, int *y, int *comp, int re
             i = 0;
             while ((nleft = width - i) > 0) {
                count = stbi__get8(s);
-               if (displayCountAircraftOnAirline > 128) {
+               if (count > 128) {
                   // Run
                   value = stbi__get8(s);
                   count -= 128;

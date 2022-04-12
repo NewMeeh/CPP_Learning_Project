@@ -6,16 +6,16 @@
 
 #include <string>
 #include "aircraft_types.hpp"
-#include "airport.hpp"
+#include "aircraft.hpp"
 
-
+class Airport;
 class AircraftFactory
 {
 private:
 
     std::set<std::string> usedNames;
 
-    std::unique_ptr<Aircraft> create_aircraft(const AircraftType& type, Airport* airport);
+    std::unique_ptr<Aircraft> create_aircraft(const AircraftType& type, Tower& tower);
 
     static constexpr size_t NUM_AIRCRAFT_TYPES = 3;
     AircraftType* aircraft_types[NUM_AIRCRAFT_TYPES] {};
@@ -33,7 +33,7 @@ public:
         aircraft_types[2] = new AircraftType { .02f, .10f, .02f, MediaPath { "concorde_af.png" } };
     }
 
-    std::unique_ptr<Aircraft> create_random_aircraft(Airport* airport);
+    std::unique_ptr<Aircraft> create_random_aircraft(Tower& tower);
 
 
 };

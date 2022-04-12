@@ -13,6 +13,21 @@ WaypointQueue Tower::get_circle() const
              { Point3D { -1.5f, 1.5f, .5f }, wp_air } };
 }
 
+WaypointQueue Tower::reserve_terminal(Aircraft& aircraft)
+{
+    const auto vp = airport.reserve_terminal(aircraft);
+    if (!vp.first.empty())
+    {
+        reserved_terminals.insert(std::pair<const Aircraft*, size_t>(&aircraft, vp.second));
+        //reserved_terminals.emplace_back(&aircraft, vp.second);
+        return vp.first;
+    }
+    else
+    {
+        return {};
+    }
+}
+
 WaypointQueue Tower::get_instructions(Aircraft& aircraft)
 {
     if (!aircraft.is_at_terminal)
@@ -56,6 +71,12 @@ WaypointQueue Tower::get_instructions(Aircraft& aircraft)
             return {};
         }
     }
+}
+
+void Tower::cancel_reservation (const Aircraft* aircraft) {
+    auto o = reserved_terminals[aircraft];
+    airport.get_terminal(o).unassign_craft();
+    reserved_terminals.erase(aircraft);
 }
 
 void Tower::arrived_at_terminal(const Aircraft& aircraft)

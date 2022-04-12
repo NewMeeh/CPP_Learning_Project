@@ -1,16 +1,15 @@
 #pragma once
 
 #include "GL/displayable.hpp"
-#include "aircraft_types.hpp"
-#include "config.hpp"
+#include "GL/dynamic_object.hpp"
 #include "geometry.hpp"
-#include "tower.hpp"
 #include "waypoint.hpp"
+#include "aircraft_types.hpp"
+#include "tower.hpp"
 
 #include <string>
 #include <string_view>
 
-class Tower;
 
 class Aircraft : public GL::Displayable, public GL::DynamicObject
 {
@@ -21,8 +20,8 @@ private:
     WaypointQueue waypoints = {};
     Tower& control;
     bool landing_gear_deployed = false; // is the landing gear deployed?
-    bool is_at_terminal        = false;
     int fuel;
+    bool is_on_ground() const { return pos.z() < DISTANCE_THRESHOLD; }
 
     // turn the aircraft to arrive at the next waypoint
     // try to facilitate reaching the waypoint after the next by facing the
@@ -41,7 +40,6 @@ private:
     // deploy and retract landing gear depending on next waypoints
     void operate_landing_gear();
     void add_waypoint(const Waypoint& wp, const bool front);
-    bool is_on_ground() const { return pos.z() < DISTANCE_THRESHOLD; }
     float max_speed() const { return is_on_ground() ? type.max_ground_speed : type.max_air_speed; }
 
     Aircraft(const Aircraft&) = delete;
@@ -60,9 +58,21 @@ public:
     {
         speed.cap_length(max_speed());
     }
+    ~Aircraft(){
+        if (has_terminal()) {
+            control.cancel_reservation(this);
+        }
+    }
+
+    bool is_at_terminal        = false;
 
     const std::string get_flight_num() const { return flight_number; }
     float distance_to(const Point3D& p) const { return pos.distance_to(p); }
+    bool has_terminal() const;
+    bool is_circling() const;
+    int fuel_left() const;
+    bool is_low_on_fuel() const;
+    void refill(int& fuel_stock);
 
     void display() const override;
     bool move() override;

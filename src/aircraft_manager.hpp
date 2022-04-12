@@ -7,9 +7,8 @@
 #include "aircraft.hpp"
 #include "aircraft_factory.hpp"
 
-#include <string>
-#include <map>
 #include <memory>
+
 
 class AircraftManager : public GL::DynamicObject
 {
@@ -22,8 +21,9 @@ public:
     };
     ~AircraftManager() {};
 
-    void create_aircraft(Airport *airport);
+    void create_aircraft(Tower& tower);
     void init();
+    int get_required_fuel() const;
 
     bool move();
     void displayCountAircraftOnAirline(int i);

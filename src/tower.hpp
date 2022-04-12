@@ -1,7 +1,6 @@
 #pragma once
 
 #include "waypoint.hpp"
-#include "aircraft.hpp"
 
 #include <algorithm>
 #include <unordered_map>
@@ -35,8 +34,11 @@ private:
 
 public:
     Tower(Airport& airport_) : airport { airport_ } {}
+    void cancel_reservation (const Aircraft* aircraft);
 
     // produce instructions for aircraft
     WaypointQueue get_instructions(Aircraft& aircraft);
     void arrived_at_terminal(const Aircraft& aircraft);
+    WaypointQueue reserve_terminal(Aircraft& aircraft);
+
 };

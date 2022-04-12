@@ -5,8 +5,8 @@
 #include "aircraft_manager.hpp"
 
 
-void AircraftManager::create_aircraft(Airport *airport) {
-    aircrafts.emplace_back(aircraftFactory.create_random_aircraft(airport));
+void AircraftManager::create_aircraft(Tower& tower) {
+    aircrafts.emplace_back(aircraftFactory.create_random_aircraft(tower));
 }
 
 void AircraftManager::init() {
@@ -15,6 +15,33 @@ void AircraftManager::init() {
 
 bool AircraftManager::move()
 {
+ //   for(auto &o : aircrafts) {
+ //       std::cout << o->get_flight_num() << " - " << (o->has_terminal() ? " Reserved " : " NotReserved ") << "/ Fuel: " <<  o->fuel_left() << std::endl;
+ //   }
+    std::sort(aircrafts.begin(), aircrafts.end(),
+              [](std::unique_ptr<Aircraft>& a1, std::unique_ptr<Aircraft>& a2){
+                  if (a1->has_terminal()) {
+                      if (a2->has_terminal()) {
+                          return a1->fuel_left() < a2->fuel_left();
+                      }
+                      return true;
+                  }
+                  else
+                  {
+                      if (a2->has_terminal())
+                      {
+                          return false;
+                      }
+                      else {
+                          return a1->fuel_left() < a2->fuel_left();
+                      }
+                  }
+              });
+    /*
+    std::cout << "----------------------------------------------------------\n" << std::endl;
+    for(auto &o : aircrafts) {
+        std::cout << o->get_flight_num() << " - " << (o->has_terminal() ? " Reserved " : " NotReserved ") << "/ Fuel: " <<  o->fuel_left() << std::endl;
+    }*/
     aircrafts.erase(
         std::remove_if(
             aircrafts.begin(),
@@ -23,6 +50,15 @@ bool AircraftManager::move()
         aircrafts.end());
 
     return true;
+}
+
+int AircraftManager::get_required_fuel() const {
+    return std::accumulate(
+        aircrafts.begin(),
+        aircrafts.end(), 0,
+        [](int acc, const std::unique_ptr<Aircraft>& aircraft){
+            return acc + (aircraft->is_low_on_fuel() && aircraft->is_at_terminal ? 3000 - aircraft->fuel_left() : 0);
+        });
 }
 
 void AircraftManager::displayCountAircraftOnAirline(int i) {

@@ -88,6 +88,26 @@ void Aircraft::add_waypoint(const Waypoint& wp, const bool front)
     }
 }
 
+bool Aircraft::has_terminal() const
+{
+    return !waypoints.empty() && waypoints.back().type == wp_terminal;
+}
+
+bool Aircraft::is_circling() const
+{
+    return !has_terminal() && !is_on_ground() && !is_at_terminal;
+}
+
+int Aircraft::fuel_left() const
+{
+    return fuel;
+}
+
+bool Aircraft::is_low_on_fuel() const
+{
+    return fuel < 200;
+}
+
 bool Aircraft::move()
 {
     bool ret = true;
@@ -95,9 +115,17 @@ bool Aircraft::move()
     {
         waypoints = control.get_instructions(*this);
     }
+    if (is_circling()) {
+        auto tmp = control.reserve_terminal(*this);
+
+        if (!tmp.empty())
+        {
+            waypoints.clear();
+            std::copy(tmp.begin(), tmp.end(), std::back_inserter(waypoints));
+        }
+    }
     if (!is_at_terminal)
     {
-        fuel--;
         if(fuel == 0) {
             ret = false;
             std::cout << "Aicraft on flihgt " << flight_number << " crashed : no fuel left" << std::endl;
@@ -134,6 +162,7 @@ bool Aircraft::move()
         }
         else
         {
+            fuel--;
             // if we are in the air, but too slow, then we will sink!
             const float speed_len = speed.length();
             if (speed_len < SPEED_THRESHOLD)
@@ -146,6 +175,18 @@ bool Aircraft::move()
         GL::Displayable::z = pos.x() + pos.y();
     }
     return ret;
+}
+
+void Aircraft::refill(int& fuel_stock)
+{
+    auto quantity = 3000 - fuel;
+    if (fuel_stock < quantity) {
+        quantity = fuel_stock;
+    }
+    fuel_stock -= quantity;
+    fuel += quantity;
+
+    std::cout << flight_number << " refueled " << quantity << '\n';
 }
 
 void Aircraft::display() const

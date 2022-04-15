@@ -43,6 +43,7 @@ void TowerSimulation::create_keystrokes()
     GL::keystrokes.emplace('a', []() { GL::faster(); });
     GL::keystrokes.emplace('z', []() { GL::slower(); });
     GL::keystrokes.emplace('p', []() { GL::pause(); });
+    GL::keystrokes.emplace('m', [this]() { std::cout << aircraftManager.get_nb_crash() << " crashes since the beginning" << std::endl; });
     for (char c = '0'; c < '8'; c++) {
         GL::keystrokes.emplace(c, [this, c]() { aircraftManager.displayCountAircraftOnAirline(c - '0');});
     }

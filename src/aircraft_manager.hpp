@@ -15,6 +15,7 @@ class AircraftManager : public GL::DynamicObject
 private:
     std::vector<std::unique_ptr<Aircraft>> aircrafts = std::vector<std::unique_ptr<Aircraft>>();
     AircraftFactory aircraftFactory;
+    int nb_crash = 0;
 
 public:
     AircraftManager() {
@@ -24,6 +25,7 @@ public:
     void create_aircraft(Tower& tower);
     void init();
     int get_required_fuel() const;
+    int get_nb_crash() {return nb_crash;}
 
     bool move();
     void displayCountAircraftOnAirline(int i);

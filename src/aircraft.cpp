@@ -107,7 +107,6 @@ bool Aircraft::is_low_on_fuel() const
 {
     return fuel < 200;
 }
-
 bool Aircraft::move()
 {
     bool ret = true;
@@ -116,19 +115,22 @@ bool Aircraft::move()
         waypoints = control.get_instructions(*this);
     }
     if (is_circling()) {
+
         auto tmp = control.reserve_terminal(*this);
 
         if (!tmp.empty())
         {
-            waypoints.clear();
+            //waypoints.clear();
             std::copy(tmp.begin(), tmp.end(), std::back_inserter(waypoints));
         }
     }
+
+
     if (!is_at_terminal)
     {
         if(fuel == 0) {
-            ret = false;
-            std::cout << "Aicraft on flihgt " << flight_number << " crashed : no fuel left" << std::endl;
+            using namespace std::string_literals;
+            throw AircraftCrash { flight_number + " crashed : no fuel left"s };
         }
 
         if (waypoints.empty()){

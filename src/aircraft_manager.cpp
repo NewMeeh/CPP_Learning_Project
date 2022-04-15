@@ -37,16 +37,28 @@ bool AircraftManager::move()
                       }
                   }
               });
+
     /*
     std::cout << "----------------------------------------------------------\n" << std::endl;
     for(auto &o : aircrafts) {
         std::cout << o->get_flight_num() << " - " << (o->has_terminal() ? " Reserved " : " NotReserved ") << "/ Fuel: " <<  o->fuel_left() << std::endl;
-    }*/
+    }
+     */
+
     aircrafts.erase(
         std::remove_if(
             aircrafts.begin(),
             aircrafts.end(),
-            [](const auto &it){return !it->move();}),
+            [this](const auto &it){
+                try {
+                    return !it->move();
+                } catch (const AircraftCrash& aircraftCrash)
+                {
+                    nb_crash++;
+                    std::cerr << aircraftCrash.what() << std::endl;
+                    return true;
+                }
+            }),
         aircrafts.end());
 
     return true;

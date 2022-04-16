@@ -7,6 +7,7 @@
 #include <iostream>
 #include <numeric>
 
+/*
 struct Point2D
 {
     float values[2] {};
@@ -62,69 +63,80 @@ struct Point2D
         return result;
     }
 };
+*/
 
-struct Point3D
+template<typename type, int dimensions, typename = std::enable_if_t<std::is_arithmetic_v<type>>>
+struct Point
 {
-    std::array<float, 3> values;
+    std::array<type, dimensions> values;
 
-    Point3D() {}
-    Point3D(float x, float y, float z) : values { x, y, z } {}
+    template <typename ...T> explicit Point(T&& ... values_)
+            : values {static_cast<type>(values_) ...} {
+        static_assert(dimensions>0);
+        static_assert(sizeof...(values_) == dimensions);
+    }
+    type& x() { return values[0]; }
+    type x() const { return values[0]; }
 
-    float& x() { return values[0]; }
-    float x() const { return values[0]; }
+    type& y() { static_assert(dimensions>1);return values[1]; }
+    type y() const { static_assert(dimensions>1);return values[1]; }
 
-    float& y() { return values[1]; }
-    float y() const { return values[1]; }
+    type& z() { static_assert(dimensions>2);return values[2]; }
+    type z() const { static_assert(dimensions>2);return values[2]; }
 
-    float& z() { return values[2]; }
-    float z() const { return values[2]; }
-
-    Point3D& operator+=(const Point3D& other)
-    {
+    Point<type, dimensions>& operator+=(const Point<type, dimensions>& other) {
         std::transform(values.cbegin(), values.cend(), other.values.cbegin(), values.begin(), std::plus<>());
-        //x() += other.x();
-        //y() += other.y();
-        //z() += other.z();
         return *this;
     }
 
-    Point3D& operator-=(const Point3D& other)
-    {
+    Point<type, dimensions>& operator-=(const Point<type, dimensions>& other) {
         std::transform(values.cbegin(), values.cend(), other.values.cbegin(), values.begin(), std::minus<>());
-        //x() -= other.x();
-        //y() -= other.y();
-        //z() -= other.z();
         return *this;
     }
 
-    Point3D& operator*=(const float scalar)
+    Point<type, dimensions>& operator*=(const Point<type, dimensions>& other) {
+        std::transform(values.cbegin(), values.cend(), other.values.cbegin(), values.begin(), std::multiplies<>());
+        return *this;
+    }
+
+    Point<type, dimensions>& operator*=(const float scalar)
     {
         std::transform(values.cbegin(), values.cend(), values.begin(), [scalar](float x){return x*scalar;});
         return *this;
     }
 
-    Point3D operator+(const Point3D& other) const
+    Point<type, dimensions> operator+(const Point<type, dimensions>& other) const
     {
-        Point3D result = *this;
+        Point<type, dimensions> result = *this;
         result += other;
         return result;
     }
 
-    Point3D operator-(const Point3D& other) const
+    Point<type, dimensions> operator-(const Point<type, dimensions>& other) const
     {
-        Point3D result = *this;
+        Point<type, dimensions> result = *this;
         result -= other;
         return result;
     }
 
-    Point3D operator*(const float scalar) const
+    Point<type, dimensions> operator*(const Point<type, dimensions>& other) const
     {
-        Point3D result = *this;
+        Point<type, dimensions> result = *this;
+        result *= other;
+        return result;
+    }
+
+    Point<type, dimensions> operator*(const float scalar) const
+    {
+        Point<type, dimensions> result = *this;
         result *= scalar;
         return result;
     }
 
-    Point3D operator-() const { return Point3D { -x(), -y(), -z() }; }
+    Point<type, dimensions> operator-() const
+    {
+        return *this * -1;
+    }
 
     float length() const {
         auto o = std::transform_reduce(
@@ -133,13 +145,13 @@ struct Point3D
             0.f,
             [](float x, float y){return x+y;},
             [](const float x){return x*x;}
-            );
-    return std::sqrt(o);
+        );
+        return std::sqrt(o);
     }
 
-    float distance_to(const Point3D& other) const { return (*this - other).length(); }
+    float distance_to(const Point<type, dimensions>& other) const { return (*this - other).length(); }
 
-    Point3D& normalize(const float target_len = 1.0f)
+    Point<type, dimensions>& normalize(const float target_len = 1.0f)
     {
         const float current_len = length();
         if (current_len == 0)
@@ -151,7 +163,8 @@ struct Point3D
         return *this;
     }
 
-    Point3D& cap_length(const float max_len)
+
+    Point<type, dimensions>& cap_length(const float max_len)
     {
         assert(max_len > 0);
 
@@ -165,10 +178,24 @@ struct Point3D
     }
 };
 
+using Point3D = Point<float, 3>;
+using Point2D = Point<float, 2>;
+
 // our 3D-coordinate system will be tied to the airport: the runway is parallel to the x-axis, the z-axis
 // points towards the sky, and y is perpendicular to both thus,
 // {1,0,0} --> {.5,.5}   {0,1,0} --> {-.5,.5}   {0,0,1} --> {0,1}
 inline Point2D project_2D(const Point3D& p)
 {
-    return { .5f * p.x() - .5f * p.y(), .5f * p.x() + .5f * p.y() + p.z() };
+    return Point2D{ .5f * p.x() - .5f * p.y(), .5f * p.x() + .5f * p.y() + p.z() };
 }
+
+
+/*
+inline Point<float, 2> project_2D(const Point<float, 3>& p)
+{
+    Point<float, 2> point;
+    point.x() = .5f * p.x() - .5f * p.y();
+    point.y() = .5f * p.x() + .5f * p.y() + p.z();
+    return point;
+}
+ */

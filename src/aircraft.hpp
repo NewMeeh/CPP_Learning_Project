@@ -9,7 +9,7 @@
 
 #include <string>
 #include <string_view>
-
+#include <X11/Xlib.h>
 
 class Aircraft : public GL::Displayable, public GL::DynamicObject
 {
@@ -39,12 +39,23 @@ private:
     void arrive_at_terminal();
     // deploy and retract landing gear depending on next waypoints
     void operate_landing_gear();
-    void add_waypoint(const Waypoint& wp, const bool front);
     float max_speed() const { return is_on_ground() ? type.max_ground_speed : type.max_air_speed; }
 
     Aircraft(const Aircraft&) = delete;
     Aircraft& operator=(const Aircraft&) = delete;
 
+    template <bool front>
+    void add_waypoint(const Waypoint& wp)
+    {
+        if constexpr (front)
+        {
+            waypoints.push_front(wp);
+        }
+        else
+        {
+            waypoints.push_back(wp);
+        }
+    }
 public:
     Aircraft(const AircraftType& type_, const std::string_view& flight_number_, const Point3D& pos_,
              const Point3D& speed_, Tower& control_, const int fuel_) :
@@ -80,4 +91,6 @@ public:
     bool move() override;
 
     friend class Tower;
+   // void add_waypoint(const Waypoint& wp, const Bool front);
 };
+

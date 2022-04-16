@@ -6,18 +6,22 @@
 
 
 void AircraftManager::create_aircraft(Tower& tower) {
+    assert(initialized);
     aircrafts.emplace_back(aircraftFactory.create_random_aircraft(tower));
 }
 
 void AircraftManager::init() {
+    assert((initialized = !initialized));
     aircraftFactory.init_aircraft_types();
 }
 
 bool AircraftManager::move()
 {
+    assert(initialized);
  //   for(auto &o : aircrafts) {
  //       std::cout << o->get_flight_num() << " - " << (o->has_terminal() ? " Reserved " : " NotReserved ") << "/ Fuel: " <<  o->fuel_left() << std::endl;
  //   }
+
     std::sort(aircrafts.begin(), aircrafts.end(),
               [](std::unique_ptr<Aircraft>& a1, std::unique_ptr<Aircraft>& a2){
                   if (a1->has_terminal()) {
@@ -65,6 +69,7 @@ bool AircraftManager::move()
 }
 
 int AircraftManager::get_required_fuel() const {
+    assert(initialized);
     return std::accumulate(
         aircrafts.begin(),
         aircrafts.end(), 0,
@@ -74,6 +79,7 @@ int AircraftManager::get_required_fuel() const {
 }
 
 void AircraftManager::displayCountAircraftOnAirline(int i) {
+    assert(initialized);
     auto airline = aircraftFactory.airlines[i];
     std::cout << std::count_if(aircrafts.begin(),
                          aircrafts.end(),

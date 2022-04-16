@@ -46,6 +46,7 @@ unsigned int Aircraft::get_speed_octant() const
 // when we arrive at a terminal, signal the tower
 void Aircraft::arrive_at_terminal()
 {
+    assert(is_on_ground() && has_terminal());
     // we arrived at a terminal, so start servicing
     control.arrived_at_terminal(*this);
     is_at_terminal = true;
@@ -90,7 +91,7 @@ void Aircraft::add_waypoint(const Waypoint& wp, const bool front)
 
 bool Aircraft::has_terminal() const
 {
-    return !waypoints.empty() && waypoints.back().type == wp_terminal;
+    return !waypoints.empty() && waypoints.back().is_at_terminal();
 }
 
 bool Aircraft::is_circling() const
@@ -181,6 +182,8 @@ bool Aircraft::move()
 
 void Aircraft::refill(int& fuel_stock)
 {
+    assert(is_low_on_fuel());
+
     auto quantity = 3000 - fuel;
     if (fuel_stock < quantity) {
         quantity = fuel_stock;

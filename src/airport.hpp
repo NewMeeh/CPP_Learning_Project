@@ -64,7 +64,9 @@ public:
         terminals { type.create_terminals() },
         tower { *this },
         aircraftManager { aircraftManager_ }
-    {}
+    {
+        assert(image!= nullptr);
+    }
 
     const AircraftManager& get ()  {return aircraftManager;}
 
@@ -74,6 +76,8 @@ public:
 
     bool move() override
     {
+        assert(next_refill_time>=0 && next_refill_time <= 100);
+        assert(ordered_fuel>= 0 && ordered_fuel <= 5000);
         if (next_refill_time == 0) {
             fuel_stock += ordered_fuel;
             //std::cout << aircraftManager.get_required_fuel() << " REQUIRED " << std::endl;

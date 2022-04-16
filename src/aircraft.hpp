@@ -56,6 +56,8 @@ public:
         control { control_ },
         fuel {fuel_}
     {
+        assert(!flight_number_.empty());
+        //assert(control_);
         speed.cap_length(max_speed());
     }
     ~Aircraft(){

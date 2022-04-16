@@ -74,9 +74,15 @@ WaypointQueue Tower::get_instructions(Aircraft& aircraft)
 }
 
 void Tower::cancel_reservation (const Aircraft* aircraft) {
+    assert(aircraft);
+    assert(!reserved_terminals.empty());
+    assert(reserved_terminals.find(aircraft) != reserved_terminals.end());
+
     auto o = reserved_terminals[aircraft];
     airport.get_terminal(o).unassign_craft();
     reserved_terminals.erase(aircraft);
+
+    assert(reserved_terminals.find(aircraft) == reserved_terminals.end());
 }
 
 void Tower::arrived_at_terminal(const Aircraft& aircraft)

@@ -6,6 +6,7 @@
 
 std::unique_ptr<Aircraft> AircraftFactory::create_aircraft(const AircraftType& type, Tower& tower)
 {
+    assert(std::all_of(aircraft_types, aircraft_types + NUM_AIRCRAFT_TYPES, [](AircraftType* aircraftType){return aircraftType != nullptr;}));
     //assert(airport); // make sure the airport is initialized before creating aircraft
     std::string flight_number;
     do {
@@ -21,5 +22,6 @@ std::unique_ptr<Aircraft> AircraftFactory::create_aircraft(const AircraftType& t
 
 std::unique_ptr<Aircraft> AircraftFactory::create_random_aircraft(Tower& tower)
 {
+    assert(std::all_of(aircraft_types, aircraft_types + NUM_AIRCRAFT_TYPES, [](AircraftType* aircraftType){return aircraftType != nullptr;}));
     return create_aircraft(*(aircraft_types[rand() % 3]), tower);
 }

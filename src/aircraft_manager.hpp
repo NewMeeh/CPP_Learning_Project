@@ -16,6 +16,7 @@ private:
     std::vector<std::unique_ptr<Aircraft>> aircrafts = std::vector<std::unique_ptr<Aircraft>>();
     AircraftFactory aircraftFactory;
     int nb_crash = 0;
+    bool initialized = false;
 
 public:
     AircraftManager() {

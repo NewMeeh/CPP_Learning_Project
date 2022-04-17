@@ -21,4 +21,3 @@ struct AircraftType
         texture { new img::Image { sprite.get_full_path() }, num_tiles }
     {}
 };
-

@@ -2,14 +2,14 @@
 
 #include "GL/displayable.hpp"
 #include "GL/dynamic_object.hpp"
-#include "geometry.hpp"
-#include "waypoint.hpp"
 #include "aircraft_types.hpp"
+#include "geometry.hpp"
 #include "tower.hpp"
+#include "waypoint.hpp"
 
+#include <X11/Xlib.h>
 #include <string>
 #include <string_view>
-#include <X11/Xlib.h>
 
 class Aircraft : public GL::Displayable, public GL::DynamicObject
 {
@@ -20,6 +20,7 @@ private:
     WaypointQueue waypoints = {};
     Tower& control;
     bool landing_gear_deployed = false; // is the landing gear deployed?
+    bool got_served = false;
     int fuel;
     bool is_on_ground() const { return pos.z() < DISTANCE_THRESHOLD; }
 
@@ -44,8 +45,7 @@ private:
     Aircraft(const Aircraft&) = delete;
     Aircraft& operator=(const Aircraft&) = delete;
 
-    template <bool front>
-    void add_waypoint(const Waypoint& wp)
+    template <bool front> void add_waypoint(const Waypoint& wp)
     {
         if constexpr (front)
         {
@@ -56,6 +56,7 @@ private:
             waypoints.push_back(wp);
         }
     }
+
 public:
     Aircraft(const AircraftType& type_, const std::string_view& flight_number_, const Point3D& pos_,
              const Point3D& speed_, Tower& control_, const int fuel_) :
@@ -65,19 +66,18 @@ public:
         pos { pos_ },
         speed { speed_ },
         control { control_ },
-        fuel {fuel_}
+        fuel { fuel_ }
     {
         assert(!flight_number_.empty());
-        //assert(control_);
         speed.cap_length(max_speed());
     }
-    ~Aircraft(){
-        if (has_terminal()) {
-            control.cancel_reservation(this);
-        }
+    ~Aircraft()
+    {
+        if (has_terminal()) control.cancel_reservation(this);
+
     }
 
-    bool is_at_terminal        = false;
+    bool is_at_terminal = false;
 
     const std::string get_flight_num() const { return flight_number; }
     float distance_to(const Point3D& p) const { return pos.distance_to(p); }
@@ -91,6 +91,4 @@ public:
     bool move() override;
 
     friend class Tower;
-   // void add_waypoint(const Waypoint& wp, const Bool front);
 };
-

@@ -84,7 +84,7 @@ bool Aircraft::has_terminal() const
 
 bool Aircraft::is_circling() const
 {
-    return !has_terminal() && !is_on_ground() && !is_at_terminal;
+    return !has_terminal() && !is_on_ground() && !is_at_terminal &&!got_served;
 }
 
 int Aircraft::fuel_left() const
@@ -99,34 +99,37 @@ bool Aircraft::is_low_on_fuel() const
 bool Aircraft::move()
 {
     bool ret = true;
-    if (waypoints.empty())
+    if (is_circling() && !got_served)
     {
-        constexpr auto front = false;
-        for (const auto& wp: control.get_instructions(*this))
-        {
-            add_waypoint<front>(wp);
-        }
-    }
-    if (is_circling()) {
-
         auto tmp = control.reserve_terminal(*this);
 
         if (!tmp.empty())
         {
-            //waypoints.clear();
-            std::for_each(tmp.begin(), tmp.end(), [this](Waypoint& waypoint){add_waypoint<false>(waypoint);});
+            waypoints.clear();
+            got_served = true;
+            std::for_each(tmp.begin(), tmp.end(),
+                          [this](Waypoint& waypoint) { add_waypoint<false>(waypoint); });
+        }
+    }
+    if (waypoints.empty())
+    {
+        constexpr auto front = false;
+        for (const auto& wp : control.get_instructions(*this))
+        {
+            add_waypoint<front>(wp);
         }
     }
 
-
     if (!is_at_terminal)
     {
-        if(fuel == 0) {
+        if (fuel == 0)
+        {
             using namespace std::string_literals;
             throw AircraftCrash { flight_number + " crashed : no fuel left"s };
         }
 
-        if (waypoints.empty()){
+        if (waypoints.empty())
+        {
             ret = false;
         }
         turn_to_waypoint();
@@ -177,7 +180,8 @@ void Aircraft::refill(int& fuel_stock)
     assert(is_low_on_fuel());
 
     auto quantity = 3000 - fuel;
-    if (fuel_stock < quantity) {
+    if (fuel_stock < quantity)
+    {
         quantity = fuel_stock;
     }
     fuel_stock -= quantity;

@@ -3,9 +3,9 @@
 #include "GL/displayable.hpp"
 #include "GL/dynamic_object.hpp"
 #include "GL/texture.hpp"
+#include "aircraft_manager.hpp"
 #include "airport_type.hpp"
 #include "img/image.hpp"
-#include "aircraft_manager.hpp"
 #include "runway.hpp"
 #include "terminal.hpp"
 #include "tower.hpp"
@@ -20,8 +20,8 @@ private:
     const GL::Texture2D texture;
     std::vector<Terminal> terminals;
     Tower tower;
-    int fuel_stock = 0;
-    int ordered_fuel = 0;
+    int fuel_stock       = 0;
+    int ordered_fuel     = 0;
     int next_refill_time = 0;
     const AircraftManager& aircraftManager;
 
@@ -65,10 +65,10 @@ public:
         tower { *this },
         aircraftManager { aircraftManager_ }
     {
-        assert(image!= nullptr);
+        assert(image != nullptr);
     }
 
-    const AircraftManager& get ()  {return aircraftManager;}
+    const AircraftManager& get() { return aircraftManager; }
 
     Tower& get_tower() { return tower; }
 
@@ -76,19 +76,21 @@ public:
 
     bool move() override
     {
-        assert(next_refill_time>=0 && next_refill_time <= 100);
-        assert(ordered_fuel>= 0 && ordered_fuel <= 5000);
-        if (next_refill_time == 0) {
+        assert(next_refill_time >= 0 && next_refill_time <= 100);
+        assert(ordered_fuel >= 0 && ordered_fuel <= 5000);
+        if (next_refill_time == 0)
+        {
             fuel_stock += ordered_fuel;
-            //std::cout << aircraftManager.get_required_fuel() << " REQUIRED " << std::endl;
+            // std::cout << aircraftManager.get_required_fuel() << " REQUIRED " << std::endl;
 
             std::cout << "Received " << ordered_fuel;
-            ordered_fuel = std::min(aircraftManager.get_required_fuel(), 5000);
+            ordered_fuel     = std::min(aircraftManager.get_required_fuel(), 5000);
             next_refill_time = 100;
 
             std::cout << "; Current Stock " << fuel_stock << "; Next order " << ordered_fuel << '\n';
         }
-        else {
+        else
+        {
             next_refill_time--;
         }
 

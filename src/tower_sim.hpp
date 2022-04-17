@@ -8,15 +8,14 @@ struct AircraftType;
 class TowerSimulation
 {
 private:
-    bool help        = false;
-    Airport* airport = nullptr;
+    bool help                       = false;
+    Airport* airport                = nullptr;
     AircraftManager aircraftManager = AircraftManager();
 
     TowerSimulation(const TowerSimulation&) = delete;
     TowerSimulation& operator=(const TowerSimulation&) = delete;
 
-
-    void create_keystrokes() ;
+    void create_keystrokes();
     void display_help() const;
 
     void init_airport();

@@ -76,13 +76,13 @@ void timer(const int step)
     if (!is_paused)
     {
 
-        for (auto item : move_queue) {
+        for (auto item : move_queue)
+        {
             item->move();
         }
     }
     glutPostRedisplay();
     glutTimerFunc(1000u / ticks_per_sec, timer, step + 1);
-
 }
 
 void init_gl(int argc, char** argv, const char* title)
@@ -117,15 +117,18 @@ void exit_loop()
     glutLeaveMainLoop();
 }
 
-void faster() {
+void faster()
+{
     ticks_per_sec++;
 }
 
-void slower() {
+void slower()
+{
     ticks_per_sec--;
 }
 
-void pause() {
+void pause()
+{
     is_paused = !is_paused;
 }
 

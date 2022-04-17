@@ -1,7 +1,3 @@
-//
-// Created by Thomas on 11/03/2022.
-//
-
 #pragma once
 
 #include "aircraft.hpp"
@@ -9,26 +5,23 @@
 
 #include <memory>
 
-
 class AircraftManager : public GL::DynamicObject
 {
 private:
     std::vector<std::unique_ptr<Aircraft>> aircrafts = std::vector<std::unique_ptr<Aircraft>>();
     AircraftFactory aircraftFactory;
-    int nb_crash = 0;
+    int nb_crash     = 0;
     bool initialized = false;
 
 public:
-    AircraftManager() {
-    };
+    AircraftManager() {};
     ~AircraftManager() {};
 
     void create_aircraft(Tower& tower);
     void init();
     int get_required_fuel() const;
-    int get_nb_crash() {return nb_crash;}
+    int get_nb_crash() const { return nb_crash; }
 
     bool move();
-    void displayCountAircraftOnAirline(int i);
+    void displayCountAircraftOnAirline(int i) const;
 };
-

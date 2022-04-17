@@ -23,6 +23,8 @@ for (const auto& wp: control.get_instructions(*this))
 2. Modifiez `Aircraft::add_waypoint` afin que l'évaluation du flag ait lieu à la compilation et non à l'exécution.
 Que devez-vous changer dans l'appel de la fonction pour que le programme compile ?
 
+> Il faut mettre front en `constexpr` et le passer en tant que paramètre de template.
+
 3. **BONUS** En utilisant [GodBolt](https://godbolt.org/), comparez le code-assembleur généré par les fonctions suivantes:
 <table border="0">
  <tr>
@@ -63,7 +65,7 @@ Vérifiez que votre programme compile et fonctionne comme avant.
 Que se passe-t-il ?
 Comment pourriez-vous expliquer que cette erreur ne se produise que maintenant ?
 
-On a une erreur de compilation `error: excess elements in struct initializer` au début le compilateur ne se rend
+>On a une erreur de compilation `error: excess elements in struct initializer` au début le compilateur ne se rend
 pas compte de la bêtise qu'on est en train de faire car il existe un constructeur de `Point` à 3 paramètres
 c'est seulement au moment de les ajouter au `std::array`de taille 2 que ça bloque.
 
@@ -71,13 +73,13 @@ c'est seulement au moment de les ajouter au `std::array`de taille 2 que ça bloq
 Utilisez un `static_assert` afin de vous assurez que personne ne puisse initialiser un `Point3D` avec seulement deux éléments.
 Faites en de même dans les fonctions `y()` et `z()`, pour vérifier que l'on ne puisse pas les appeler sur des `Point` qui n'ont pas la dimension minimale requise.
 
-Un `Point3D` avec deux arguments ne lui pose aucun soucis car il a la place dans `values`.
+>Un `Point3D` avec deux arguments ne lui pose aucun soucis car il a la place dans `values`.
 
 6. Plutôt qu'avoir un constructeur pour chaque cas possible (d'ailleurs, vous n'avez pas traité tous les cas possibles, juste 2D et 3D), vous allez utiliser un variadic-template et du perfect-forwarding pour transférer n'importe quel nombre d'arguments de n'importe quel type directement au constructeur de `values`.  
 Vous conserverez bien entendu le `static_assert` pour vérifier que le nombre d'arguments passés correspond bien à la dimension du `Point`.\
 En faisant ça, vous aurez peut-être désormais des problèmes avec la copie des `Point`.
 Que pouvez-vous faire pour supprimer l'ambiguité ?
 
-Pour supprimer l'ambiguïté j'ai mis le construteur comme `explicit` et j'ai donc eu à le rajouter aux endroits ou il y avait besoin.
+>Pour supprimer l'ambiguïté j'ai mis le constructeur comme `explicit` et j'ai donc eu à le rajouter aux endroits où il y avait besoin.
 
 8. **BONUS** En utilisant SFINAE, faites en sorte que le template `Point` ne puisse être instancié qu'avec des types [arithmétiques](https://en.cppreference.com/w/cpp/types/is_arithmetic).

@@ -9,21 +9,21 @@ Sur quelle touche faut-il appuyer pour ajouter un avion ?
 Comment faire pour quitter le programme ?
 A quoi sert la touche 'F' ?
 
-Pour ajouter on appuie sur `C`
-Pour quitter faut appuyer sur `X` et `Q`
-Pour le 11 septembre faut appuyer sur `F`
+> Pour ajouter on appuie sur `C`
+ Pour quitter il faut appuyer sur `X` et `Q`
+ Pour le mode plein écran il faut appuyer sur `F`
 
 Ajoutez un avion à la simulation et attendez.
 Que est le comportement de l'avion ?
 Quelles informations s'affichent dans la console ?
 
-On voit l'avion atterrir ensuite il fait l'entretient puis il repart. en boucle.
+> On voit l'avion atterrir ensuite il fait l'entretient puis il repart. en boucle.
 On a l'information quand il atterrit quand il commence l'entretient, quand il a terminé, puis quand il décolle.
 
 Ajoutez maintenant quatre avions d'un coup dans la simulation.
 Que fait chacun des avions ?
 
-chacun des avions fait son chemin.
+> Chacun des avions fait son chemin.
 
 ## B- Analyse du code
 
@@ -41,41 +41,44 @@ Pour chacune d'entre elle, expliquez ce qu'elle représente et son rôle dans le
  - `tower` : Représente la tour de control de l'aéroport
  - `tower_sim` : Fait l'interface pour que l'utilisateur puisse controller la tour de contrôle
  - `waypoint` : Représente les points de passage
- - `WaypointType` : Les différents types de `waypoint` il peuvent etre sur le sol, dans un terminal ou dans les airs.
+ - `WaypointType` : Les différents types de `waypoint` il peuvent être sur le sol, dans un terminal ou dans les airs.
 
 Pour les classes `Tower`, `Aircaft`, `Airport` et `Terminal`, listez leurs fonctions-membre publiques et expliquez précisément à quoi elles servent.
 Réalisez ensuite un schéma présentant comment ces différentes classes intéragissent ensemble.
 
  - `Tower` : 
-   - `get_instructions` : Sert à récupérer les instructions de la tour de controle.
+   - `get_instructions` : Sert à récupérer les instructions de la tour de control.
    - `arrived_at_terminal` : Indique à la tour que l'avion est arrivé au terminal et commence l'entretient.
    
  - `Aircraft` : 
    - `get_flight_num` : Renvoie le numéro de vol de l'avion
    - `distance_to` : Renvoie la distance de l'avion à un point donné.
    - `display` : Affiche l'avion
-   - `move` : Déplace l'avion
+   - `move` : Fonction qui est appelée régulièrement afin de déplacer l'avion et d'effectuer des actions en fonction de son état.
 
  - `Airport` : 
-   - `get_tower` : Renvoie la tour de controle
+   - `get_tower` : Renvoie la tour de control de l'aéroport
    - `display` : Affiche l'aéroport.
    - `move` : Fait avancer l'entretient de chaque terminal
 
  - `Terminal` : 
-   - `in_use` : Renvoie un booléen indiquant si le terminal est actuellement utilisé
+   - `in_use` : Renvoie un booléen indiquant si le terminal est actuellement utilisé (un avion lui est assigné)
    - `is_servicing` : Renvoie un booléen indiquant si le terminal est en train de faire l'entretient d'un avion
    - `assign_craft` : Assigne un avion au terminal
    - `start_service` : Commence l'entretient de l'avion
-   - `finish_service` : Termine l'entretient de l'avion
-   - `move` : Fait avancer l'entretient de l'avion
+   - `finish_service` : Termine l'entretient de l'avion 
+   - `move` : Fait avancer l'entretient de l'avion si le terminal est en train de faire l'entretient d'un avion.
 
 
 Quelles classes et fonctions sont impliquées dans la génération du chemin d'un avion ?
 
-La classe `Waypoint` la fonction `Tower::get_circle()` la fonction `Aircraft::move()`
+>La classe `Waypoint` la fonction `Tower::get_circle()` la fonction `Aircraft::move()`
 
 Quel conteneur de la librairie standard a été choisi pour représenter le chemin ?
 Expliquez les intérêts de ce choix.
+
+> std::deque ce choix est intéressant car on peut ajouter et retirer des éléments au début et à la fin du conteneur
+> on peut donc par exemple lire les waypoints au début et en rajouter à la fin au fur et à mesure.
 
 ## C- Bidouillons !
 
@@ -83,19 +86,19 @@ Expliquez les intérêts de ce choix.
 Le Concorde est censé pouvoir voler plus vite que les autres avions.
 Modifiez le programme pour tenir compte de cela.
 
-Dans aircraft_types j'ai doublé la vitesse max par rapport aux autres.
+> Dans aircraft_types j'ai doublé la vitesse max par rapport aux autres.
 
 2) Identifiez quelle variable contrôle le framerate de la simulation.
 Ajoutez deux nouveaux inputs au programme permettant d'augmenter ou de diminuer cette valeur.
 Essayez maintenant de mettre en pause le programme en manipulant ce framerate. Que se passe-t-il ?\
 Ajoutez une nouvelle fonctionnalité au programme pour mettre le programme en pause, et qui ne passe pas par le framerate.
 
-Il faut gérer le framerate dans `opengl_interface` il y a une variable `ticks_per_sec`.
+>Il faut gérer le framerate dans `opengl_interface` il y a une variable `ticks_per_sec`.
 Si on essaye de mettre le programme en pause ça crash car le programme essaye de faire une division par 0.
 
 3) Identifiez quelle variable contrôle le temps de débarquement des avions et doublez-le.
 
-`SERVICE_CYCLES` * 2 :) 
+> `SERVICE_CYCLES` * 2 :) 
 
 4) Lorsqu'un avion a décollé, il réattérit peu de temps après.
 Faites en sorte qu'à la place, il soit retiré du programme.\
@@ -110,7 +113,8 @@ Il faut également penser à le supprimer de cette liste avant de le détruire.
 Faites en sorte que l'ajout et la suppression de `display_queue` soit "automatiquement gérée" lorsqu'un `Displayable` est créé ou détruit.
 Pourquoi n'est-il pas spécialement pertinent d'en faire de même pour `DynamicObject` ?
 
-Parce que c'est pas pertinent. TODO
+> Car il y a certains `DynamicObject` qu'on ne veut pas mettre dans la move queue car on veut les faire bouger
+que sous conditions
 
 6) La tour de contrôle a besoin de stocker pour tout `Aircraft` le `Terminal` qui lui est actuellement attribué, afin de pouvoir le libérer une fois que l'avion décolle.
 Cette information est actuellement enregistrée dans un `std::vector<std::pair<const Aircraft*, size_t>>` (size_t représentant l'indice du terminal).
@@ -118,18 +122,18 @@ Cela fait que la recherche du terminal associé à un avion est réalisée en te
 Cela n'est pas grave tant que ce nombre est petit, mais pour préparer l'avenir, on aimerait bien remplacer le vector par un conteneur qui garantira des opérations efficaces, même s'il y a beaucoup de terminaux.\
 Modifiez le code afin d'utiliser un conteneur STL plus adapté. Normalement, à la fin, la fonction `find_craft_and_terminal(const Aicraft&)` ne devrait plus être nécessaire.
 
-On le change par une map.
+> On le change par une map.
 
 ## D- Théorie
 
 1) Comment a-t-on fait pour que seule la classe `Tower` puisse réserver un terminal de l'aéroport ?
 
-On a mis le chemps reserved_terminals privé et Airport contient possède un `friend class Tower;` (pas joli).
+> On a mis le chemps reserved_terminals privé et Airport contient possède un `friend class Tower;` (pas joli).
 
-2) En regardant le contenu de la fonction `void Aircraft::turn(Point3D direction)`, pourquoi selon-vous ne sommes-nous pas passer par une const référence ?
+2) En regardant le contenu de la fonction `void Aircraft::turn(Point3D direction)`, pourquoi selon-vous ne sommes-nous pas passés par une const référence ?
 Pensez-vous qu'il soit possible d'éviter la copie du `Point3D` passé en paramètre ?
 
-Non ce n'est pas possible car notre fonction modifie l'objet passé en paramètre.
+> Non ce n'est pas possible car notre fonction a besoin de modifier l'objet passé en paramètre.
 
 ## E- Bonus
 

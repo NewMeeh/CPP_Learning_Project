@@ -119,12 +119,14 @@ void exit_loop()
 
 void faster()
 {
-    ticks_per_sec++;
+    if (ticks_per_sec < UINT_MAX)
+        ticks_per_sec++;
 }
 
 void slower()
 {
-    ticks_per_sec--;
+    if (ticks_per_sec > 1)
+        ticks_per_sec--;
 }
 
 void pause()
